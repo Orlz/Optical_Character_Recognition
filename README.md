@@ -125,7 +125,7 @@ And then activate the environment by typing:
 $ source language_analytics05/bin/activate
 ```
 
-**3. Run the script ** 
+**3. Run the script** 
 
 With the repository cloned and the virtual encironment activated, the following command will run the script: 
 
@@ -146,3 +146,23 @@ Letter call  | Parameter              | Required? | Input Type     | Description
 
 
 ## Discussion of Results 
+
+Unsurprisingly, the task of converting our old war documents into text files has been somewhat unfruitful in its efforts. Our script was able to successfully run through the images, identify text, and extract it into a dataframe. However, upon inspection, the words which have been scraped are more often meaningless characters strung together. Even articles which should have been easier to translate, such as the newspaper or the neatly written note, have returned quite poor textual translations. This is a problem, because it shows that we are not yet close to being able to extract meaningful text from images of this quality, with these tools. However, what we can take from this exploration is direction for where we can start to build the tools. 
+
+Comparing the notebook's text results to that of the script is a good place to start. Here, we see that with some individual image manipulation, we can highlight the text to be more recognisable to a computer. In this state, tesseract is able to detect significantly more words. The handwritten tag provides a good example of this: in the notebook with just a greyscale function applied to the image, tesseract is able to detect 5 of the 8 words on the tag. That's around 63% accuracy. By comparison, our script was not able to detect any of the words in this image. This tells us two things: firstly that applying a greyscale filter is advantageous for the text recognition (the EAST detector cannot take greyscale images as it applies its own filter to the image which needs to use the three colour channels of the image). Secondly, it appears that tesseract works better on images when it is considering the text as a unit of text (with psm = 6) rather than considering each line at a time (with psm =7). This may indicate that the network is using its knowledge of the surrounding words to make its predictions in our notebook, and is not able to do this with the approach we take in the script. We can consider how the two images were recognised below: 
+
+**Left =  greyscaled image,  Right = image after passing through EAST detection**
+
+ <img src="https://github.com/Orlz/CDS_Visual_Analytics/blob/main/Portfolio/greyscaled_tag.png" alt="alt text" width="400" height="300">  <img src="https://github.com/Orlz/Optical_Character_Recognition/blob/main/Output/images/handwritten_tag_EAST.jpeg" alt="alt text" width="400" height="300"> 
+ 
+ The problem appears to lie with tesseracts ability to recognise the text. The EAST detector is able to find the text regions and isolate the words, but tesseract just struggles to make any sense of them. Perhaps this indicates that to tackle this challenge, we need to be using a neural network which is pre-trained on handwriting, instead of the vast range of images tesseract was trained on. This is not such an easy transition to make, as to build suck a network would require a lot of manual labour to collect enough handwritten images with enough different styles to train the model. Luckily for future researchers, there's a team who are already looking into this! Harald Scheidel and his team have been working on developing such a model over the past number of years using tensorflow, and offer a great next step for a project like this! you can read more about the model and its developments [here](https://github.com/githubharald/SimpleHTR). 
+ 
+To bring our explorations to a conclusion, we can say that it is by no coincidence that our beloved war documents have not been translated into a text file format. Indeed, many of the documents are hard for a human to make sense of, never mind a computer! However, with better models and more training on handwritten content, it is likely that we could overcome this challenge. EAST demonstrated how easily it can find the regions containing text, and with a bit of manipulating we could easily make such tools work for this context. For example, we could image using an EAST style text detector alongside a more adaptable OCR to extract newspaper headlines from the time and compile a dataset similar to the one we used in the sentiment analysis assignment (albeit with many less headlines than a million!). 
+
+I believe pursuing this challenge is one that will pay off and look forward to the future of language analytics working hand in hand with history! 
+
+I hope you've enjoyed the portfolio! 
+
+___Teaching credit___ Many thanks to Ross Deans Kristiansen-McLachlen for providing an interesting and supportive venture into the world of Language Analytics! 
+
+<div>Icons made by <a href="https://www.freepik.com" title="Freepik">Freepik</a> from <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a></div>
